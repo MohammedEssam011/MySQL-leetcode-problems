@@ -1,0 +1,16 @@
+#Solution- 1:
+SELECT ROUND(sum(CASE WHEN t1.event_date = t2.first_event+1 THEN 1 ELSE 0 END)/
+FROM Activity t1
+JOIN
+(SELECT player_id, MIN(event_date) AS first_event
+FROM Activity
+GROUP BY player_id) t2
+ON t1.player_id = t2.player_id;
+
+#Solution- 2:
+SELECT ROUND(COUNT(DISTINCT b.player_id)/COUNT(DISTINCT a.player_id),2) AS frac
+FROM
+(SELECT player_id, MIN(event_date) AS event_date FROM Activity
+GROUP BY player_id) a
+LEFT JOIN Activity b
+ON a.player_id = b.player_id AND a.event_date+1 = b.event_date;
